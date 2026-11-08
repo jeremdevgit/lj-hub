@@ -3,11 +3,12 @@
 mod catalog;
 mod device;
 mod i18n;
+mod inventory;
 mod model;
 
 use eframe::egui;
 use model::{Profile, Saved};
-use std::{fs, path::PathBuf};
+use std::{fs, path::PathBuf, sync::mpsc, time::Duration};
 
 fn data_path() -> Option<PathBuf> {
     directories::ProjectDirs::from("com", "jeremdevgit", "LJ Hub")
@@ -38,38 +39,55 @@ fn save(path: &PathBuf, data: &Saved) -> Result<(), String> {
 struct App {
     data: Saved,
     devices: Vec<device::Device>,
+    inventory: Vec<inventory::InventoryDevice>,
+    inventory_rx: Option<mpsc::Receiver<Result<Vec<inventory::InventoryDevice>, String>>>,
+    inventory_status: String,
     catalog: Vec<catalog::CatalogDevice>,
     catalog_query: String,
     selected_profile: usize,
     selected_device: usize,
     status: String,
+    settings_load_error: Option<String>,
     path: Option<PathBuf>,
 }
 
 impl App {
     fn new() -> Self {
         let path = data_path();
-        let (data, status) = match path.as_ref() {
+        let (data, settings_load_error) = match path.as_ref() {
             Some(p) if p.exists() => match load(p) {
-                Ok(data) => (data, String::new()),
-                Err(e) => (Saved::default(), format!("Could not load settings: {e}")),
+                Ok(data) => (data, None),
+                Err(e) => (
+                    Saved::default(),
+                    Some(format!("Could not load settings: {e}")),
+                ),
             },
-            _ => (Saved::default(), String::new()),
+            _ => (Saved::default(), None),
         };
         let devices = device::discover().unwrap_or_default();
         let catalog = catalog::entries();
+        let inventory_rx = Some(start_inventory_scan());
         Self {
             data,
             devices,
+            inventory: Vec::new(),
+            inventory_rx,
+            inventory_status: String::new(),
             catalog,
             catalog_query: String::new(),
             selected_profile: 0,
             selected_device: 0,
-            status,
+            status: String::new(),
+            settings_load_error,
             path,
         }
     }
     fn persist(&mut self) {
+        if let Some(error) = &self.settings_load_error {
+            self.status =
+                format!("{error}. Existing file was preserved; correct it before saving.");
+            return;
+        }
         self.status = match &self.path {
             Some(p) => match save(p, &self.data) {
                 Ok(()) => "Saved locally".into(),
@@ -78,10 +96,42 @@ impl App {
             None => "Cannot locate configuration directory".into(),
         };
     }
+
+    fn refresh_inventory(&mut self) {
+        self.inventory_rx = Some(start_inventory_scan());
+        self.inventory_status.clear();
+    }
+}
+
+fn start_inventory_scan() -> mpsc::Receiver<Result<Vec<inventory::InventoryDevice>, String>> {
+    let (tx, rx) = mpsc::channel();
+    std::thread::spawn(move || {
+        let _ = tx.send(inventory::discover());
+    });
+    rx
 }
 
 impl eframe::App for App {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        if let Some(rx) = &self.inventory_rx {
+            match rx.try_recv() {
+                Ok(Ok(items)) => {
+                    self.inventory = items;
+                    self.inventory_rx = None;
+                }
+                Ok(Err(error)) => {
+                    self.inventory_status = error;
+                    self.inventory_rx = None;
+                }
+                Err(mpsc::TryRecvError::Disconnected) => {
+                    self.inventory_status = "Inventory scan stopped".into();
+                    self.inventory_rx = None;
+                }
+                Err(mpsc::TryRecvError::Empty) => {
+                    ctx.request_repaint_after(Duration::from_millis(250))
+                }
+            }
+        }
         let lang = self.data.language.clone();
         egui::TopBottomPanel::top("top").show(ctx, |ui| {
             ui.horizontal(|ui| {
@@ -114,6 +164,7 @@ impl eframe::App for App {
                         Ok(devices) => {
                             self.devices = devices;
                             self.selected_device = 0;
+                            self.refresh_inventory();
                         }
                         Err(e) => self.status = e,
                     }
@@ -132,6 +183,22 @@ impl eframe::App for App {
                         response.on_hover_text(format!("libratbag: {driver}"));
                     }
                 }
+                ui.separator();
+                ui.heading(i18n::t(&lang, "system_inventory"));
+                ui.small(i18n::t(&lang, "inventory_note"));
+                if self.inventory_rx.is_some() {
+                    ui.label(i18n::t(&lang, "scanning"));
+                }
+                if !self.inventory_status.is_empty() {
+                    ui.small(&self.inventory_status);
+                }
+                egui::ScrollArea::vertical()
+                    .max_height(150.0)
+                    .show(ui, |ui| {
+                        for d in &self.inventory {
+                            ui.label(format!("{} · {} · {}", d.name, d.id, d.kind));
+                        }
+                    });
                 ui.separator();
                 ui.small(if cfg!(target_os = "linux") {
                     i18n::t(&lang, "linux_note")
@@ -216,26 +283,64 @@ impl eframe::App for App {
                 if ui.button(i18n::t(&lang, "save")).clicked() {
                     self.persist();
                 }
+            });
+            let can_apply = self
+                .devices
+                .get(self.selected_device)
+                .is_some_and(|d| d.ratbag_id.is_some());
+            ui.horizontal_wrapped(|ui| {
                 if ui
-                    .add_enabled(
-                        self.devices
-                            .get(self.selected_device)
-                            .is_some_and(|d| d.ratbag_id.is_some()),
-                        egui::Button::new(i18n::t(&lang, "apply")),
-                    )
+                    .add_enabled(can_apply, egui::Button::new(i18n::t(&lang, "apply_dpi")))
                     .clicked()
                 {
-                    self.status = match device::apply(
+                    self.status = format_result(device::apply_dpi(
                         &self.devices[self.selected_device],
                         &self.data.profiles[self.selected_profile],
-                    ) {
-                        Ok(s) | Err(s) => s,
-                    };
+                    ));
+                }
+                if ui
+                    .add_enabled(can_apply, egui::Button::new(i18n::t(&lang, "apply_rate")))
+                    .clicked()
+                {
+                    self.status = format_result(device::apply_rate(
+                        &self.devices[self.selected_device],
+                        &self.data.profiles[self.selected_profile],
+                    ));
                 }
             });
+            if ui
+                .checkbox(
+                    &mut self.data.rgb_control_enabled,
+                    i18n::t(&lang, "rgb_control"),
+                )
+                .changed()
+            {
+                self.persist();
+            }
+            ui.small(i18n::t(&lang, "rgb_note"));
+            if ui
+                .add_enabled(
+                    can_apply && self.data.rgb_control_enabled,
+                    egui::Button::new(i18n::t(&lang, "apply_rgb")),
+                )
+                .clicked()
+            {
+                self.status = format_result(device::apply_color(
+                    &self.devices[self.selected_device],
+                    &self.data.profiles[self.selected_profile],
+                    self.data.rgb_control_enabled,
+                ));
+            }
             ui.separator();
             ui.label(format!("{}: {}", i18n::t(&lang, "status"), self.status));
         });
+    }
+}
+
+fn format_result(result: Result<String, String>) -> String {
+    match result {
+        Ok(message) => message,
+        Err(error) => format!("Error: {error}"),
     }
 }
 

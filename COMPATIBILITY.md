@@ -5,6 +5,7 @@ LJ Hub aims to recognize all currently available Logitech G devices. A device ca
 | State | Meaning |
 |---|---|
 | USB detected | The operating system exposes Logitech vendor ID `046d` to HID discovery. |
+| System inventory | The OS lists a present Logitech USB/PnP device, including non-HID classes such as cameras and wheels. This provides identification only. |
 | Catalog entry | An ID exists in the pinned [libratbag](https://github.com/libratbag/libratbag/tree/master/data/devices) source. Its driver is a Linux reference only. |
 | ratbagd available | A running Linux `ratbagd` exposes the device through `ratbagctl list`; LJ Hub enables its DPI and report interval action. |
 | Verified | The exact device model, firmware, connection mode and each function have been tested on physical hardware. This project has not yet published such a verified matrix. |

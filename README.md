@@ -10,9 +10,11 @@ Lightweight, local-first Logitech gaming device profile manager for Windows, mac
 | Create, edit and save local profiles | Yes | Yes | Yes |
 | Interface in 8 languages | Yes | Yes | Yes |
 | Search 116 Logitech IDs from a pinned libratbag catalog | Yes | Yes | Yes |
+| System USB/PnP inventory beyond HID (for example cameras and wheels) | Yes | Yes | Yes |
 | Set DPI and report interval with `ratbagd` | — | — | Supported mice only |
+| Set LED 0 static color with `ratbagd` | — | — | Supported devices, opt-in only |
 
-The RGB color and notes fields are stored in the profile but are **not sent to hardware**. Device-specific controls, macros, key mapping, LIGHTSYNC effects, audio, webcam, wheels, firmware, game detection, cloud profiles and automatic profile switching are not implemented. USB discovery alone does not imply a device can be configured. Linux hardware controls require `ratbagd`, `ratbagctl` and a device supported by libratbag.
+RGB control is **off by default** so rJb can own the lighting. While off, LJ Hub sends no RGB commands. On Linux, users can explicitly opt in to send the profile's static color to LED 0 through `ratbagd` on devices that expose it. Notes stay local. Device-specific controls, macros, key mapping, LIGHTSYNC effects, audio, webcam, wheels, firmware, game detection, cloud profiles and automatic profile switching are not implemented. System inventory and USB discovery do not imply a device can be configured. Linux hardware controls require `ratbagd`, `ratbagctl` and a device supported by libratbag.
 
 The bundled ID catalog is generated from [libratbag's device files](https://github.com/libratbag/libratbag/tree/master/data/devices) at the pinned commit recorded in `data/libratbag-logitech.json`. It is a Linux driver reference, **not** an exhaustive list of G HUB devices or a claim of hardware control. Connected Logitech USB devices are still shown even if absent from that catalog. Maintainers can refresh it with `python3 tools/refresh_libratbag_catalog.py /path/to/libratbag`.
 

@@ -1,5 +1,13 @@
 # Changelog / Journal des modifications
 
+## 0.1.2-alpha
+
+- RGB control defaults to off so rJb can own lighting; old settings inherit this safe default / Contrôle RVB désactivé par défaut pour laisser l'éclairage à rJb, y compris pour les anciens réglages.
+- Separate Linux DPI, report interval and optional LED 0 color commands / Commandes Linux distinctes pour le DPI, l'intervalle et la couleur facultative de la LED 0.
+- System USB/PnP inventory for Logitech cameras, wheels and other device classes / Inventaire USB/PnP des caméras, volants et autres catégories Logitech.
+- Preserve an invalid settings file instead of overwriting it / Conservation d'un fichier de réglages invalide au lieu de l'écraser.
+- Preserve multiple connected devices of the same product ID / Conservation de plusieurs périphériques ayant le même identifiant produit.
+
 ## 0.1.1-alpha
 
 - Searchable catalog of 116 Logitech identifiers from pinned libratbag data / Catalogue consultable de 116 identifiants Logitech issus d'une révision fixée de libratbag.

@@ -6,8 +6,8 @@ Signalez une faille en privé via **Report a vulnerability** sur GitHub. Merci d
 
 ## Boundaries / Limites
 
-Profiles are local JSON files, not encrypted secrets. Do not store passwords in profile notes. Linux hardware writes are limited to validated DPI and report interval arguments passed directly to `ratbagctl`, without a shell. Hardware compatibility is model-specific. The app does not download drivers or firmware.
+Profiles are local JSON files, not encrypted secrets. Do not store passwords in profile notes. Linux hardware writes are limited to validated DPI, report interval and optional LED 0 color arguments passed directly to `ratbagctl`, without a shell. RGB writes are disabled by default so rJb can own lighting. Hardware compatibility is model-specific. The app does not download drivers or firmware.
 
-Les profils sont des fichiers JSON locaux, pas des coffres chiffrés. Ne stockez pas de mots de passe dans les notes. Sous Linux, seuls le DPI et l'intervalle validés sont transmis directement à `ratbagctl`, sans shell. La compatibilité dépend du modèle. L'application ne télécharge ni pilote ni micrologiciel.
+Les profils sont des fichiers JSON locaux, pas des coffres chiffrés. Ne stockez pas de mots de passe dans les notes. Sous Linux, seuls le DPI, l'intervalle et la couleur facultative de la LED 0 sont transmis directement à `ratbagctl`, sans shell. Le RVB est désactivé par défaut pour laisser le contrôle à rJb. La compatibilité dépend du modèle. L'application ne télécharge ni pilote ni micrologiciel.
 
 Dependency audit on 2026-11-08: zero known vulnerabilities in `Cargo.lock`; informational maintenance notices for transitive `paste` and `ttf-parser`. / Audit du 08/11/2026 : aucune vulnérabilité connue ; avis de maintenance pour les dépendances transitives `paste` et `ttf-parser`.
