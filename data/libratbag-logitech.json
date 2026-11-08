@@ -1,0 +1,818 @@
+{
+  "source": "https://github.com/libratbag/libratbag",
+  "commit": "8235b5bb6032dea15901ab58a8218956f4494d08",
+  "devices": [
+    {
+      "name": "Logitech M325",
+      "transport": "usb",
+      "product_id": "400A",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech M500s",
+      "transport": "usb",
+      "product_id": "C093",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech M545",
+      "transport": "usb",
+      "product_id": "4052",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech M570",
+      "transport": "usb",
+      "product_id": "1028",
+      "kind": "mouse",
+      "driver": "hidpp10"
+    },
+    {
+      "name": "Logitech M585/M590",
+      "transport": "usb",
+      "product_id": "406B",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech M585/M590",
+      "transport": "bluetooth",
+      "product_id": "B01B",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech M705",
+      "transport": "usb",
+      "product_id": "101B",
+      "kind": "mouse",
+      "driver": "hidpp10"
+    },
+    {
+      "name": "Logitech M720",
+      "transport": "usb",
+      "product_id": "405E",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech M720",
+      "transport": "bluetooth",
+      "product_id": "B015",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Anywhere 3",
+      "transport": "bluetooth",
+      "product_id": "B025",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Anywhere 3",
+      "transport": "usb",
+      "product_id": "4090",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Anywhere 3S",
+      "transport": "bluetooth",
+      "product_id": "B037",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Anywhere 2",
+      "transport": "usb",
+      "product_id": "404A",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Anywhere 2",
+      "transport": "usb",
+      "product_id": "4072",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Anywhere 2",
+      "transport": "usb",
+      "product_id": "4063",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Anywhere 2",
+      "transport": "bluetooth",
+      "product_id": "B013",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Anywhere 2",
+      "transport": "bluetooth",
+      "product_id": "B018",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Anywhere 2",
+      "transport": "bluetooth",
+      "product_id": "B01F",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Anywhere 2S",
+      "transport": "bluetooth",
+      "product_id": "B01A",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Anywhere 2S",
+      "transport": "usb",
+      "product_id": "406A",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Anywhere 3B",
+      "transport": "bluetooth",
+      "product_id": "B02D",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Ergo",
+      "transport": "bluetooth",
+      "product_id": "B01D",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Ergo",
+      "transport": "usb",
+      "product_id": "406F",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Master 2S",
+      "transport": "bluetooth",
+      "product_id": "B019",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Master 2S",
+      "transport": "usb",
+      "product_id": "4069",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Master 3",
+      "transport": "bluetooth",
+      "product_id": "B023",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Master 3",
+      "transport": "usb",
+      "product_id": "4082",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Master 3S for Business",
+      "transport": "bluetooth",
+      "product_id": "B035",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Master 3S",
+      "transport": "bluetooth",
+      "product_id": "B034",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Master 4",
+      "transport": "bluetooth",
+      "product_id": "B042",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Master",
+      "transport": "usb",
+      "product_id": "4041",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Master",
+      "transport": "bluetooth",
+      "product_id": "B012",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Master",
+      "transport": "usb",
+      "product_id": "4060",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Master",
+      "transport": "bluetooth",
+      "product_id": "B017",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Master",
+      "transport": "bluetooth",
+      "product_id": "B01E",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Master",
+      "transport": "usb",
+      "product_id": "4071",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Vertical",
+      "transport": "bluetooth",
+      "product_id": "B020",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Vertical",
+      "transport": "usb",
+      "product_id": "407B",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Vertical",
+      "transport": "usb",
+      "product_id": "C08A",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech MX Vertical",
+      "transport": "usb",
+      "product_id": "C077",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "MX518",
+      "transport": "usb",
+      "product_id": "C08E",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech Marathon M705",
+      "transport": "usb",
+      "product_id": "406D",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech T650",
+      "transport": "usb",
+      "product_id": "4101",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech Wireless Touchpad",
+      "transport": "usb",
+      "product_id": "4011",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G Powerplay",
+      "transport": "usb",
+      "product_id": "405F",
+      "kind": "other",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G PRO Keyboard",
+      "transport": "usb",
+      "product_id": "C339",
+      "kind": "keyboard",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G Pro Wireless",
+      "transport": "usb",
+      "product_id": "4079",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G Pro Wireless",
+      "transport": "usb",
+      "product_id": "C088",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G Pro X Wireless Superlight",
+      "transport": "usb",
+      "product_id": "4093",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G Pro X Wireless Superlight",
+      "transport": "usb",
+      "product_id": "C094",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech Gaming Mouse G Pro",
+      "transport": "usb",
+      "product_id": "C085",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech Gaming Mouse G Pro",
+      "transport": "usb",
+      "product_id": "C08C",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech Gaming Mouse G102/G103/G203",
+      "transport": "usb",
+      "product_id": "C084",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech Gaming Mouse G102/G103/G203",
+      "transport": "usb",
+      "product_id": "C092",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech Gaming Mouse G102/G103/G203",
+      "transport": "usb",
+      "product_id": "C09D",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G300",
+      "transport": "usb",
+      "product_id": "C246",
+      "kind": "mouse",
+      "driver": "logitech_g300"
+    },
+    {
+      "name": "Logitech Gaming Mouse G302",
+      "transport": "usb",
+      "product_id": "C07F",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G303 Shroud Edition",
+      "transport": "usb",
+      "product_id": "C097",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech Gaming Mouse G303",
+      "transport": "usb",
+      "product_id": "C080",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech Gaming Mouse G305",
+      "transport": "usb",
+      "product_id": "4074",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G402 Gaming Mouse",
+      "transport": "usb",
+      "product_id": "C07E",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G403 Hero",
+      "transport": "usb",
+      "product_id": "C08F",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G403 Wireless",
+      "transport": "usb",
+      "product_id": "405D",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G403 Wireless",
+      "transport": "usb",
+      "product_id": "C082",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G403",
+      "transport": "usb",
+      "product_id": "C083",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G413",
+      "transport": "usb",
+      "product_id": "C33A",
+      "kind": "keyboard",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G5",
+      "transport": "usb",
+      "product_id": "C049",
+      "kind": "mouse",
+      "driver": "hidpp10"
+    },
+    {
+      "name": "G5",
+      "transport": "usb",
+      "product_id": "C041",
+      "kind": "mouse",
+      "driver": "hidpp10"
+    },
+    {
+      "name": "Logitech G500",
+      "transport": "usb",
+      "product_id": "C068",
+      "kind": "mouse",
+      "driver": "hidpp10"
+    },
+    {
+      "name": "Logitech G500s",
+      "transport": "usb",
+      "product_id": "C24E",
+      "kind": "mouse",
+      "driver": "hidpp10"
+    },
+    {
+      "name": "Logitech G502 Hero Wireless",
+      "transport": "usb",
+      "product_id": "407F",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G502 Hero Wireless",
+      "transport": "usb",
+      "product_id": "C08D",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G502 Hero",
+      "transport": "usb",
+      "product_id": "C08B",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G502 Proteus Core",
+      "transport": "usb",
+      "product_id": "C07D",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G502 Proteus Spectrum",
+      "transport": "usb",
+      "product_id": "C332",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G502 X PLUS",
+      "transport": "usb",
+      "product_id": "4099",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G502 X PLUS",
+      "transport": "usb",
+      "product_id": "C095",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G502 X Wireless",
+      "transport": "usb",
+      "product_id": "C098",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G502 X Wireless",
+      "transport": "usb",
+      "product_id": "409F",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G502 X",
+      "transport": "usb",
+      "product_id": "C099",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G513",
+      "transport": "usb",
+      "product_id": "C33C",
+      "kind": "keyboard",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G600",
+      "transport": "usb",
+      "product_id": "C24A",
+      "kind": "mouse",
+      "driver": "logitech_g600"
+    },
+    {
+      "name": "Logitech G602",
+      "transport": "usb",
+      "product_id": "402C",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G603",
+      "transport": "usb",
+      "product_id": "406C",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G603",
+      "transport": "bluetooth",
+      "product_id": "B01C",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G604",
+      "transport": "usb",
+      "product_id": "4085",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G604",
+      "transport": "bluetooth",
+      "product_id": "B024",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G635",
+      "transport": "usb",
+      "product_id": "0A89",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G7",
+      "transport": "usb",
+      "product_id": "C51A",
+      "kind": "mouse",
+      "driver": "hidpp10"
+    },
+    {
+      "name": "Logitech G700",
+      "transport": "usb",
+      "product_id": "C531",
+      "kind": "mouse",
+      "driver": "hidpp10"
+    },
+    {
+      "name": "Logitech G700",
+      "transport": "usb",
+      "product_id": "C06B",
+      "kind": "mouse",
+      "driver": "hidpp10"
+    },
+    {
+      "name": "Logitech G700s",
+      "transport": "usb",
+      "product_id": "C07C",
+      "kind": "mouse",
+      "driver": "hidpp10"
+    },
+    {
+      "name": "Logitech G703 Hero",
+      "transport": "usb",
+      "product_id": "4086",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G703 Hero",
+      "transport": "usb",
+      "product_id": "C090",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G703",
+      "transport": "usb",
+      "product_id": "C087",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G703",
+      "transport": "usb",
+      "product_id": "4070",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G705",
+      "transport": "usb",
+      "product_id": "C096",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G705",
+      "transport": "usb",
+      "product_id": "409D",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G705",
+      "transport": "bluetooth",
+      "product_id": "B02E",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G733 Gaming Headset",
+      "transport": "usb",
+      "product_id": "0AB5",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G733 Gaming Headset",
+      "transport": "usb",
+      "product_id": "0AFE",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G815",
+      "transport": "usb",
+      "product_id": "C33F",
+      "kind": "keyboard",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G9",
+      "transport": "usb",
+      "product_id": "C048",
+      "kind": "mouse",
+      "driver": "hidpp10"
+    },
+    {
+      "name": "Logitech G900",
+      "transport": "usb",
+      "product_id": "C081",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G900",
+      "transport": "usb",
+      "product_id": "4053",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G903 Hero",
+      "transport": "usb",
+      "product_id": "C091",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G903 Hero",
+      "transport": "usb",
+      "product_id": "4087",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G903",
+      "transport": "usb",
+      "product_id": "C086",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G903",
+      "transport": "usb",
+      "product_id": "4067",
+      "kind": "mouse",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G910",
+      "transport": "usb",
+      "product_id": "C335",
+      "kind": "keyboard",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G915 TKL",
+      "transport": "usb",
+      "product_id": "C343",
+      "kind": "keyboard",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G915 TKL",
+      "transport": "bluetooth",
+      "product_id": "B35F",
+      "kind": "keyboard",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G915",
+      "transport": "usb",
+      "product_id": "C33E",
+      "kind": "keyboard",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G935",
+      "transport": "usb",
+      "product_id": "0A87",
+      "kind": "other",
+      "driver": "hidpp20"
+    },
+    {
+      "name": "Logitech G9x [Call of Duty MW3 Edition]",
+      "transport": "usb",
+      "product_id": "C249",
+      "kind": "mouse",
+      "driver": "hidpp10"
+    },
+    {
+      "name": "G9x [Original]",
+      "transport": "usb",
+      "product_id": "C066",
+      "kind": "mouse",
+      "driver": "hidpp10"
+    }
+  ]
+}

@@ -6,20 +6,28 @@ pub struct Device {
     pub label: String,
     pub id: String,
     pub ratbag_id: Option<String>,
+    pub catalog_driver: Option<String>,
 }
 
 pub fn discover() -> Result<Vec<Device>, String> {
     let api = hidapi::HidApi::new().map_err(|e| e.to_string())?;
+    let catalog = crate::catalog::entries();
     let mut devices = Vec::new();
     for d in api.device_list().filter(|d| d.vendor_id() == 0x046d) {
         let id = format!("{:04X}:{:04X}", d.vendor_id(), d.product_id());
         if devices.iter().any(|x: &Device| x.id == id) {
             continue;
         }
+        let known = crate::catalog::usb_entry(&catalog, d.product_id());
         devices.push(Device {
-            label: d.product_string().unwrap_or("Logitech device").to_owned(),
+            label: d
+                .product_string()
+                .or_else(|| known.map(|entry| entry.name.as_str()))
+                .unwrap_or("Logitech device")
+                .to_owned(),
             id,
             ratbag_id: None,
+            catalog_driver: known.map(|entry| entry.driver.clone()),
         });
     }
     #[cfg(target_os = "linux")]
@@ -35,6 +43,7 @@ pub fn discover() -> Result<Vec<Device>, String> {
                         label: label.trim().to_owned(),
                         id: format!("ratbag:{id}"),
                         ratbag_id: Some(id.to_owned()),
+                        catalog_driver: None,
                     });
                 }
             }

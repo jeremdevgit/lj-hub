@@ -1,5 +1,6 @@
 #![cfg_attr(target_os = "windows", windows_subsystem = "windows")]
 
+mod catalog;
 mod device;
 mod i18n;
 mod model;
@@ -37,6 +38,8 @@ fn save(path: &PathBuf, data: &Saved) -> Result<(), String> {
 struct App {
     data: Saved,
     devices: Vec<device::Device>,
+    catalog: Vec<catalog::CatalogDevice>,
+    catalog_query: String,
     selected_profile: usize,
     selected_device: usize,
     status: String,
@@ -54,9 +57,12 @@ impl App {
             _ => (Saved::default(), String::new()),
         };
         let devices = device::discover().unwrap_or_default();
+        let catalog = catalog::entries();
         Self {
             data,
             devices,
+            catalog,
+            catalog_query: String::new(),
             selected_profile: 0,
             selected_device: 0,
             status,
@@ -117,17 +123,40 @@ impl eframe::App for App {
                     ui.label(i18n::t(&lang, "no_device"));
                 }
                 for (i, d) in self.devices.iter().enumerate() {
-                    ui.selectable_value(
+                    let response = ui.selectable_value(
                         &mut self.selected_device,
                         i,
                         format!("{} ({})", d.label, d.id),
                     );
+                    if let Some(driver) = &d.catalog_driver {
+                        response.on_hover_text(format!("libratbag: {driver}"));
+                    }
                 }
                 ui.separator();
                 ui.small(if cfg!(target_os = "linux") {
                     i18n::t(&lang, "linux_note")
                 } else {
                     i18n::t(&lang, "desktop_note")
+                });
+                ui.separator();
+                egui::CollapsingHeader::new(i18n::t(&lang, "catalog")).show(ui, |ui| {
+                    ui.small(i18n::t(&lang, "catalog_note"));
+                    ui.text_edit_singleline(&mut self.catalog_query);
+                    let query = self.catalog_query.to_lowercase();
+                    egui::ScrollArea::vertical()
+                        .max_height(240.0)
+                        .show(ui, |ui| {
+                            for entry in self.catalog.iter().filter(|e| {
+                                query.is_empty()
+                                    || e.name.to_lowercase().contains(&query)
+                                    || e.product_id.to_lowercase().contains(&query)
+                            }) {
+                                ui.label(format!(
+                                    "{} · {} · {} · {}",
+                                    entry.name, entry.transport, entry.product_id, entry.kind
+                                ));
+                            }
+                        });
                 });
             });
         egui::CentralPanel::default().show(ctx, |ui| {

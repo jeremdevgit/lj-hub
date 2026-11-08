@@ -2,7 +2,7 @@
 
 Gestor ligero y local de perfiles para dispositivos Logitech en Windows, macOS y Linux. **Versión alfa: aún no reemplaza G HUB.** Proyecto independiente, sin afiliación con Logitech.
 
-La versión actual detecta dispositivos USB HID Logitech, guarda perfiles locales y ofrece una interfaz en ocho idiomas: francés, inglés, español, alemán, italiano, portugués, chino simplificado y japonés. En Linux, permite configurar DPI y el intervalo de informe de ratones compatibles con `ratbagd`. El color RGB se guarda en el perfil, pero todavía no se aplica al hardware.
+La versión actual detecta dispositivos USB HID Logitech, guarda perfiles locales y ofrece una interfaz en ocho idiomas: francés, inglés, español, alemán, italiano, portugués, chino simplificado y japonés. También permite consultar 116 identificadores del catálogo de `libratbag`; la lista no es exhaustiva para G HUB ni garantiza compatibilidad. En Linux, permite configurar DPI y el intervalo de informe de ratones compatibles con `ratbagd`. El color RGB se guarda en el perfil, pero todavía no se aplica al hardware.
 
 Macros, asignación de botones, iluminación, audio, cámaras, volantes, firmware y cambio automático de perfil siguen pendientes. Detectar un dispositivo USB no garantiza que pueda configurarse.
 
