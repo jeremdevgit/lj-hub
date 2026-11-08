@@ -67,6 +67,7 @@ impl App {
         let devices = device::discover().unwrap_or_default();
         let catalog = catalog::entries();
         let inventory_rx = Some(start_inventory_scan());
+        let status = settings_load_error.clone().unwrap_or_default();
         Self {
             data,
             devices,
@@ -77,7 +78,7 @@ impl App {
             catalog_query: String::new(),
             selected_profile: 0,
             selected_device: 0,
-            status: String::new(),
+            status,
             settings_load_error,
             path,
         }
@@ -164,10 +165,10 @@ impl eframe::App for App {
                         Ok(devices) => {
                             self.devices = devices;
                             self.selected_device = 0;
-                            self.refresh_inventory();
                         }
                         Err(e) => self.status = e,
                     }
+                    self.refresh_inventory();
                 }
                 ui.separator();
                 if self.devices.is_empty() {
@@ -309,9 +310,12 @@ impl eframe::App for App {
                 }
             });
             if ui
-                .checkbox(
-                    &mut self.data.rgb_control_enabled,
-                    i18n::t(&lang, "rgb_control"),
+                .add_enabled(
+                    self.settings_load_error.is_none(),
+                    egui::Checkbox::new(
+                        &mut self.data.rgb_control_enabled,
+                        i18n::t(&lang, "rgb_control"),
+                    ),
                 )
                 .changed()
             {
