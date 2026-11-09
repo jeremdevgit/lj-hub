@@ -1,6 +1,12 @@
 # LJ Hub
 
+[English](README.md) · [Français](README.fr.md) · [**Español**](README.es.md)
+
 Gestor ligero y local de perfiles para dispositivos Logitech en Windows, macOS y Linux. **Versión alfa: aún no reemplaza G HUB.** Proyecto independiente, sin afiliación con Logitech.
+
+## Descargar
+
+Descarga la [versión alfa 0.1.3](https://github.com/jeremdevgit/lj-hub/releases/tag/v0.1.3-alpha.1). En Windows, extrae el ZIP x64 y ejecuta `lj-hub.exe`. En macOS, extrae el ZIP Apple Silicon y abre `LJ Hub.app`. En Linux, extrae el ZIP x64 y ejecuta `lj-hub`. Es una aplicación portátil; todavía no incluye instalador.
 
 La versión actual detecta dispositivos USB HID Logitech, guarda perfiles locales y ofrece una interfaz en ocho idiomas: francés, inglés, español, alemán, italiano, portugués, chino simplificado y japonés. También permite consultar 116 identificadores del catálogo de `libratbag`; la lista no es exhaustiva para G HUB ni garantiza compatibilidad. En Windows, intenta configurar el DPI y el intervalo de informe en ratones con cable que anuncian las funciones HID++ 2.0 correspondientes y comprueba el resultado mediante lectura; esta función sigue siendo experimental y aún no se ha validado con modelos físicos. En Linux, estos ajustes pasan por `ratbagd` para ratones compatibles.
 

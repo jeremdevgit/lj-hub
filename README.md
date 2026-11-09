@@ -1,6 +1,12 @@
 # LJ Hub
 
+[**English**](README.md) · [Français](README.fr.md) · [Español](README.es.md)
+
 Lightweight, local-first Logitech gaming device profile manager for Windows, macOS and Linux. **Early alpha:** this is not yet a G HUB replacement. It is an independent open-source project and is not affiliated with Logitech.
+
+## Download
+
+Download the [0.1.3 alpha release](https://github.com/jeremdevgit/lj-hub/releases/tag/v0.1.3-alpha.1). On Windows, extract the Windows x64 ZIP and run `lj-hub.exe`. On macOS, extract the Apple Silicon ZIP and open `LJ Hub.app`. On Linux, extract the x64 ZIP and run `lj-hub`. This is portable software; there is no installer yet.
 
 ## What works today
 
