@@ -5,6 +5,8 @@ mod device;
 mod i18n;
 mod inventory;
 mod model;
+#[cfg(target_os = "windows")]
+mod windows_hidpp;
 
 use eframe::egui;
 use model::{Profile, Saved};
@@ -203,6 +205,8 @@ impl eframe::App for App {
                 ui.separator();
                 ui.small(if cfg!(target_os = "linux") {
                     i18n::t(&lang, "linux_note")
+                } else if cfg!(target_os = "windows") {
+                    i18n::t(&lang, "windows_note")
                 } else {
                     i18n::t(&lang, "desktop_note")
                 });
@@ -288,7 +292,7 @@ impl eframe::App for App {
             let can_apply = self
                 .devices
                 .get(self.selected_device)
-                .is_some_and(|d| d.ratbag_id.is_some());
+                .is_some_and(device::supports_hardware);
             ui.horizontal_wrapped(|ui| {
                 if ui
                     .add_enabled(can_apply, egui::Button::new(i18n::t(&lang, "apply_dpi")))
@@ -354,4 +358,21 @@ fn main() -> eframe::Result {
         eframe::NativeOptions::default(),
         Box::new(|_| Ok(Box::new(App::new()))),
     )
+}
+
+#[cfg(all(test, target_os = "windows"))]
+mod windows_tests {
+    use super::*;
+
+    #[test]
+    fn profiles_can_be_saved_more_than_once() {
+        let dir = std::env::temp_dir().join(format!("lj-hub-test-{}", std::process::id()));
+        let path = dir.join("profiles.json");
+        let mut data = Saved::default();
+        save(&path, &data).unwrap();
+        data.profiles[0].dpi = 1600;
+        save(&path, &data).unwrap();
+        assert_eq!(load(&path).unwrap().profiles[0].dpi, 1600);
+        fs::remove_dir_all(dir).unwrap();
+    }
 }

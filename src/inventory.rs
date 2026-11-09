@@ -117,6 +117,9 @@ fn parse_macos(bytes: &[u8]) -> Result<Vec<InventoryDevice>, String> {
 
 #[cfg(any(target_os = "windows", test))]
 fn parse_windows(bytes: &[u8]) -> Result<Vec<InventoryDevice>, String> {
+    if bytes.iter().all(u8::is_ascii_whitespace) {
+        return Ok(Vec::new());
+    }
     let root: Value = serde_json::from_slice(bytes).map_err(|e| e.to_string())?;
     let items: Vec<&Value> = match &root {
         Value::Array(items) => items.iter().collect(),
@@ -164,5 +167,9 @@ mod tests {
     fn windows_pnp_finds_logitech_wheel() {
         let json = br#"{"FriendlyName":"G923 Racing Wheel","InstanceId":"USB\\VID_046D&PID_C26E\\123","Class":"HIDClass"}"#;
         assert_eq!(parse_windows(json).unwrap()[0].name, "G923 Racing Wheel");
+    }
+    #[test]
+    fn windows_pnp_empty_inventory_is_not_an_error() {
+        assert!(parse_windows(b"\r\n").unwrap().is_empty());
     }
 }

@@ -1,5 +1,11 @@
 # Changelog / Journal des modifications
 
+## 0.1.3-alpha
+
+- Add experimental Windows HID++ 2.0 DPI and report interval controls, with feature and value checks plus read-back / Ajout du réglage expérimental du DPI et de l'intervalle sous Windows avec vérification des fonctions, des valeurs et du résultat.
+- Keep unsupported Logitech devices visible without claiming hardware control / Les périphériques non pilotables restent visibles sans promesse de contrôle matériel.
+- Handle an empty Windows PnP inventory and test repeated profile saving on Windows / Gestion d'un inventaire PnP vide et test de sauvegardes répétées sous Windows.
+
 ## 0.1.2-alpha
 
 - RGB control defaults to off so rJb can own lighting; old settings inherit this safe default / Contrôle RVB désactivé par défaut pour laisser l'éclairage à rJb, y compris pour les anciens réglages.

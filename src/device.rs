@@ -1,4 +1,6 @@
 use std::collections::{HashMap, HashSet};
+#[cfg(target_os = "windows")]
+use std::ffi::CString;
 #[cfg(target_os = "linux")]
 use std::process::Command;
 
@@ -6,15 +8,20 @@ use std::process::Command;
 pub struct Device {
     pub label: String,
     pub id: String,
+    #[cfg(target_os = "linux")]
     pub ratbag_id: Option<String>,
     pub catalog_driver: Option<String>,
+    #[cfg(target_os = "windows")]
+    pub hid_path: Option<CString>,
 }
 
 pub fn discover() -> Result<Vec<Device>, String> {
     let api = hidapi::HidApi::new().map_err(|e| e.to_string())?;
     let catalog = crate::catalog::entries();
-    let mut devices = Vec::new();
+    let mut devices: Vec<Device> = Vec::new();
     let mut seen = HashSet::new();
+    #[cfg(target_os = "windows")]
+    let mut seen_indices = HashMap::<String, usize>::new();
     let mut counts = HashMap::<String, usize>::new();
     for d in api.device_list().filter(|d| d.vendor_id() == 0x046d) {
         let product = format!("{:04X}:{:04X}", d.vendor_id(), d.product_id());
@@ -23,9 +30,21 @@ pub fn discover() -> Result<Vec<Device>, String> {
         } else {
             format!("{product}:path:{}", d.path().to_string_lossy())
         };
-        if !seen.insert(identity) {
+        #[cfg(target_os = "windows")]
+        if let Some(&index) = seen_indices.get(&identity) {
+            if devices[index].hid_path.is_none()
+                && (d.usage_page() == 0xff00 || d.usage_page() == 0xff43)
+                && d.usage() != 0
+            {
+                devices[index].hid_path = Some(d.path().to_owned());
+            }
             continue;
         }
+        if !seen.insert(identity.clone()) {
+            continue;
+        }
+        #[cfg(target_os = "windows")]
+        seen_indices.insert(identity, devices.len());
         let count = counts
             .entry(product.clone())
             .and_modify(|n| *n += 1)
@@ -39,8 +58,12 @@ pub fn discover() -> Result<Vec<Device>, String> {
                 .unwrap_or("Logitech device")
                 .to_owned(),
             id,
+            #[cfg(target_os = "linux")]
             ratbag_id: None,
             catalog_driver: known.map(|entry| entry.driver.clone()),
+            #[cfg(target_os = "windows")]
+            hid_path: ((d.usage_page() == 0xff00 || d.usage_page() == 0xff43) && d.usage() != 0)
+                .then(|| d.path().to_owned()),
         });
     }
     #[cfg(target_os = "linux")]
@@ -63,6 +86,18 @@ pub fn discover() -> Result<Vec<Device>, String> {
         }
     }
     Ok(devices)
+}
+
+pub fn supports_hardware(device: &Device) -> bool {
+    #[cfg(target_os = "linux")]
+    return device.ratbag_id.is_some();
+    #[cfg(target_os = "windows")]
+    return device.hid_path.is_some();
+    #[cfg(target_os = "macos")]
+    {
+        let _ = device;
+        false
+    }
 }
 
 #[cfg(target_os = "linux")]
@@ -127,12 +162,24 @@ pub fn apply_color(
     Ok(format!("RGB {} sent to LED 0 via ratbagd", profile.color))
 }
 
-#[cfg(not(target_os = "linux"))]
+#[cfg(target_os = "windows")]
+pub fn apply_dpi(device: &Device, profile: &crate::model::Profile) -> Result<String, String> {
+    profile.validate_dpi()?;
+    crate::windows_hidpp::apply_dpi(device, profile.dpi)
+}
+
+#[cfg(target_os = "windows")]
+pub fn apply_rate(device: &Device, profile: &crate::model::Profile) -> Result<String, String> {
+    profile.validate_rate()?;
+    crate::windows_hidpp::apply_rate(device, profile.report_rate_ms)
+}
+
+#[cfg(target_os = "macos")]
 pub fn apply_dpi(_device: &Device, _profile: &crate::model::Profile) -> Result<String, String> {
     Err("Hardware configuration is not yet implemented on this platform".into())
 }
 
-#[cfg(not(target_os = "linux"))]
+#[cfg(target_os = "macos")]
 pub fn apply_rate(_device: &Device, _profile: &crate::model::Profile) -> Result<String, String> {
     Err("Hardware configuration is not yet implemented on this platform".into())
 }

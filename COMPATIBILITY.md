@@ -8,6 +8,7 @@ LJ Hub aims to recognize all currently available Logitech G devices. A device ca
 | System inventory | The OS lists a present Logitech USB/PnP device, including non-HID classes such as cameras and wheels. This provides identification only. |
 | Catalog entry | An ID exists in the pinned [libratbag](https://github.com/libratbag/libratbag/tree/master/data/devices) source. Its driver is a Linux reference only. |
 | ratbagd available | A running Linux `ratbagd` exposes the device through `ratbagctl list`; LJ Hub enables its DPI and report interval action. |
+| Windows HID++ candidate | A vendor HID interface is present. LJ Hub can query features `0x2201` and `0x8060` on directly connected devices, validate supported values and read back writes. This is experimental and does not cover receiver children. |
 | Verified | The exact device model, firmware, connection mode and each function have been tested on physical hardware. This project has not yet published such a verified matrix. |
 
 The bundled catalog contains 116 Logitech transport and product ID pairs from libratbag commit `8235b5bb6032dea15901ab58a8218956f4494d08`. It includes some non-gaming Logitech models. It is not Logitech's G HUB device list, and it does not cover every Logitech G device. The application still detects USB devices absent from the catalog. Wireless receivers may expose a receiver ID instead of the paired device model.
