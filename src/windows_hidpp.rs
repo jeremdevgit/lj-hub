@@ -120,7 +120,8 @@ fn supported_dpi(response: &[u8], dpi: u16) -> bool {
     }
     let mut values = Vec::new();
     let mut step = None;
-    for pair in response[1..].chunks_exact(2) {
+    let (pairs, _) = response[1..].as_chunks::<2>();
+    for pair in pairs {
         let value = u16::from_be_bytes([pair[0], pair[1]]);
         if value == 0 {
             break;
@@ -138,7 +139,7 @@ fn supported_dpi(response: &[u8], dpi: u16) -> bool {
     else {
         return false;
     };
-    step != 0 && dpi >= *min && dpi <= *max && (dpi - *min) % step == 0
+    step != 0 && dpi >= *min && dpi <= *max && (dpi - *min).is_multiple_of(step)
 }
 
 pub fn apply_rate(device: &Device, ms: u32) -> Result<String, String> {
