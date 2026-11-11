@@ -65,6 +65,7 @@ struct Capture {
     path: PathBuf,
     frames: u32,
     requested: bool,
+    image: std::sync::Arc<std::sync::Mutex<Option<std::sync::Arc<egui::ColorImage>>>>,
 }
 
 impl App {
@@ -101,6 +102,7 @@ impl App {
             path: PathBuf::from(p),
             frames: 0,
             requested: false,
+            image: Default::default(),
         });
         Self {
             data,
@@ -185,12 +187,7 @@ impl App {
         let Some(capture) = self.capture.as_mut() else {
             return;
         };
-        let shot = ctx.input(|i| {
-            i.raw.events.iter().find_map(|e| match e {
-                egui::Event::Screenshot { image, .. } => Some(image.clone()),
-                _ => None,
-            })
-        });
+        let shot = capture.image.lock().ok().and_then(|mut slot| slot.take());
         if let Some(image) = shot {
             let [w, h] = image.size;
             let rgba: Vec<u8> = image.pixels.iter().flat_map(|c| c.to_array()).collect();
@@ -209,16 +206,24 @@ impl App {
         capture.frames += 1;
         if capture.frames > 20 && !capture.requested {
             capture.requested = true;
-            ctx.send_viewport_cmd(egui::ViewportCommand::Screenshot(Default::default()));
+            let slot = capture.image.clone();
+            let repaint = ctx.clone();
+            ctx.request_screenshot(move |image| {
+                if let Ok(mut slot) = slot.lock() {
+                    *slot = Some(image);
+                }
+                repaint.request_repaint();
+            });
         }
         ctx.request_repaint();
     }
 }
 
 impl eframe::App for App {
-    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        dashboard::render(self, ctx);
-        self.capture_frame(ctx);
+    fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
+        dashboard::render(self, ui);
+        let ctx = ui.ctx().clone();
+        self.capture_frame(&ctx);
     }
 }
 

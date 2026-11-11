@@ -68,7 +68,8 @@ pub fn theme(ctx: &egui::Context) {
     ctx.set_visuals(visuals);
 }
 
-pub fn render(app: &mut App, ctx: &egui::Context) {
+pub fn render(app: &mut App, ui: &mut egui::Ui) {
+    let ctx = &ui.ctx().clone();
     poll(app, ctx);
     let lang = app.data.language.clone();
     if !app.cjk_font_loaded && (lang == "zh-CN" || lang == "ja") {
@@ -76,10 +77,10 @@ pub fn render(app: &mut App, ctx: &egui::Context) {
         install_cjk_font(ctx);
     }
     let products = products::connected(&app.devices, &app.inventory, &app.catalog);
-    egui::SidePanel::left("nav")
-        .exact_width(190.0)
+    egui::Panel::left("nav")
+        .exact_size(190.0)
         .frame(egui::Frame::new().fill(PANEL).inner_margin(16.0))
-        .show(ctx, |ui| {
+        .show(ui, |ui| {
             ui.add_space(8.0);
             ui.colored_label(ACCENT, egui::RichText::new("LJ").size(34.0).strong());
             ui.heading("Hub");
@@ -103,13 +104,13 @@ pub fn render(app: &mut App, ctx: &egui::Context) {
                 ui.colored_label(ACCENT, "•  rJb RGB");
             });
         });
-    egui::TopBottomPanel::bottom("status")
+    egui::Panel::bottom("status")
         .frame(
             egui::Frame::new()
                 .fill(PANEL)
                 .inner_margin(egui::Margin::symmetric(16, 8)),
         )
-        .show(ctx, |ui| {
+        .show(ui, |ui| {
             ui.horizontal(|ui| {
                 ui.colored_label(ACCENT, "•");
                 ui.label(if app.status.is_empty() {
@@ -121,7 +122,7 @@ pub fn render(app: &mut App, ctx: &egui::Context) {
         });
     egui::CentralPanel::default()
         .frame(egui::Frame::new().fill(BG).inner_margin(24.0))
-        .show(ctx, |ui| {
+        .show(ui, |ui| {
             egui::ScrollArea::vertical().show(ui, |ui| {
                 ui.set_min_width(ui.available_width());
                 match app.page {
