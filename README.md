@@ -1,3 +1,5 @@
+<p align="center"><img src="installer/linux/lj-hub.svg" width="96" alt=""></p>
+
 # LJ Hub
 
 [![CI](https://github.com/jeremdevgit/lj-hub/actions/workflows/ci.yml/badge.svg)](https://github.com/jeremdevgit/lj-hub/actions/workflows/ci.yml) [![CodeQL](https://github.com/jeremdevgit/lj-hub/actions/workflows/codeql/badge.svg)](https://github.com/jeremdevgit/lj-hub/security/code-scanning)
@@ -61,19 +63,19 @@ Hardware write support will be enabled per device only after testing. Claims of 
 
 Maintainer: [jeremdevgit](https://github.com/jeremdevgit). Licensed under GPL-3.0-or-later. See [SECURITY.md](SECURITY.md) and [CHANGELOG.md](CHANGELOG.md). Interface: français, English, español, Deutsch, italiano, português, 简体中文, 日本語.
 
-## My software
+## My other software
 
-All free and open source — [github.com/jeremdevgit](https://github.com/jeremdevgit):
+All free, open source and ad-free — [github.com/jeremdevgit](https://github.com/jeremdevgit):
 
 | Software | Platform | In short |
 |---|---|---|
-| [Boîte à outils](https://github.com/jeremdevgit/boite-a-outils) | Windows, macOS | Computer maintenance and file search |
+| [AutoDex](https://github.com/jeremdevgit/autodex) | Windows, macOS, Linux | Car collection game with on-device photo recognition |
+| [Boîte à outils](https://github.com/jeremdevgit/boite-a-outils) | Windows, macOS | Computer maintenance, cleanup and file search |
 | [Carnet de notes](https://github.com/jeremdevgit/carnet-rust) | Windows | Encrypted notebooks and experimental sync |
-| [JMeca](https://github.com/jeremdevgit/jmeca) | Windows, macOS, Linux | Encrypted vehicle maintenance tracker |
 | [Decklight](https://github.com/jeremdevgit/decklight) | Windows, macOS, Linux | Virtual Stream Deck with USB control |
-| [AutoDex](https://github.com/jeremdevgit/autodex) | Windows, macOS, Linux, web | Car collection with photo recognition |
+| [JMeca](https://github.com/jeremdevgit/jmeca) | Windows, macOS, Linux | Encrypted vehicle maintenance tracker |
 | [Pomme](https://github.com/jeremdevgit/pomme) | Windows | Apple Music and local music player |
 | [rJb](https://github.com/jeremdevgit/rjb) | Windows | RGB lighting control |
 | [Ludothèque](https://github.com/jeremdevgit/ludotheque) | macOS | Game library and launcher |
-| [Suite Libre](https://github.com/jeremdevgit/suite-libre) | Browser | Six tools without an account |
+| [Suite Libre](https://jeremdevgit.github.io/suite-libre/) | Browser | Six tools without an account |
 | [Batailles de France](https://github.com/jeremdevgit/batailles-de-france) | Browser | Real-time strategy game |

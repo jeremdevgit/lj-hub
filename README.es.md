@@ -1,3 +1,5 @@
+<p align="center"><img src="installer/linux/lj-hub.svg" width="96" alt=""></p>
+
 # LJ Hub
 
 [![CI](https://github.com/jeremdevgit/lj-hub/actions/workflows/ci.yml/badge.svg)](https://github.com/jeremdevgit/lj-hub/actions/workflows/ci.yml) [![CodeQL](https://github.com/jeremdevgit/lj-hub/actions/workflows/codeql/badge.svg)](https://github.com/jeremdevgit/lj-hub/security/code-scanning)
@@ -33,19 +35,19 @@ cargo run --locked --release
 
 Los perfiles se guardan localmente. No se necesita una cuenta ni acceso a Internet. Mantenido por [jeremdevgit](https://github.com/jeremdevgit), bajo GPL-3.0-or-later.
 
-## Mis programas
+## Mis otros programas
 
-Todos libres y gratuitos — [github.com/jeremdevgit](https://github.com/jeremdevgit):
+Todos libres, gratuitos y sin publicidad — [github.com/jeremdevgit](https://github.com/jeremdevgit):
 
 | Programa | Plataforma | En resumen |
 |---|---|---|
-| [Boîte à outils](https://github.com/jeremdevgit/boite-a-outils) | Windows, macOS | Mantenimiento del ordenador y búsqueda de archivos |
-| [Carnet de notes](https://github.com/jeremdevgit/carnet-rust) | Windows | Notas cifradas y sincronización experimental |
-| [JMeca](https://github.com/jeremdevgit/jmeca) | Windows, macOS, Linux | Mantenimiento de vehículos cifrado |
+| [AutoDex](https://github.com/jeremdevgit/autodex) | Windows, macOS, Linux | Juego de colección de coches con reconocimiento de fotos en el dispositivo |
+| [Boîte à outils](https://github.com/jeremdevgit/boite-a-outils) | Windows, macOS | Mantenimiento del ordenador, limpieza y búsqueda de archivos |
+| [Carnet de notes](https://github.com/jeremdevgit/carnet-rust) | Windows | Cuadernos cifrados y sincronización experimental |
 | [Decklight](https://github.com/jeremdevgit/decklight) | Windows, macOS, Linux | Stream Deck virtual con control USB |
-| [AutoDex](https://github.com/jeremdevgit/autodex) | Windows, macOS, Linux, web | Colección de coches con reconocimiento por foto |
-| [Pomme](https://github.com/jeremdevgit/pomme) | Windows | Apple Music y música local |
-| [rJb](https://github.com/jeremdevgit/rjb) | Windows | Iluminación RGB |
+| [JMeca](https://github.com/jeremdevgit/jmeca) | Windows, macOS, Linux | Seguimiento de mantenimiento de vehículos cifrado |
+| [Pomme](https://github.com/jeremdevgit/pomme) | Windows | Reproductor de música para Apple Music y archivos locales |
+| [rJb](https://github.com/jeremdevgit/rjb) | Windows | Control de la iluminación RGB |
 | [Ludothèque](https://github.com/jeremdevgit/ludotheque) | macOS | Biblioteca y lanzador de juegos |
-| [Suite Libre](https://github.com/jeremdevgit/suite-libre) | Navegador | Seis herramientas sin cuenta |
+| [Suite Libre](https://jeremdevgit.github.io/suite-libre/) | Navegador | Seis herramientas sin cuenta |
 | [Batailles de France](https://github.com/jeremdevgit/batailles-de-france) | Navegador | Juego de estrategia en tiempo real |
