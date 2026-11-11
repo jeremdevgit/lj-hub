@@ -1,12 +1,23 @@
 # LJ Hub
 
+[![CI](https://github.com/jeremdevgit/lj-hub/actions/workflows/ci.yml/badge.svg)](https://github.com/jeremdevgit/lj-hub/actions/workflows/ci.yml) [![CodeQL](https://github.com/jeremdevgit/lj-hub/actions/workflows/codeql/badge.svg)](https://github.com/jeremdevgit/lj-hub/security/code-scanning)
+
 [**English**](README.md) · [Français](README.fr.md) · [Español](README.es.md)
 
 Lightweight, local-first Logitech gaming device profile manager for Windows, macOS and Linux. **Early alpha:** this is not yet a G HUB replacement. It is an independent open-source project and is not affiliated with Logitech.
 
 ## Download
 
-Download the [0.1.3 alpha release](https://github.com/jeremdevgit/lj-hub/releases/tag/v0.1.3-alpha.1). On Windows, extract the Windows x64 ZIP and run `lj-hub.exe`. On macOS, extract the Apple Silicon ZIP and open `LJ Hub.app`. On Linux, extract the x64 ZIP and run `lj-hub`. This is portable software; there is no installer yet.
+Download the [0.2.0 alpha release](https://github.com/jeremdevgit/lj-hub/releases/tag/v0.2.0-alpha.1). Windows has a per-user `.exe` installer, macOS has an Apple Silicon `.dmg`, and Linux has an Ubuntu/Debian x64 `.deb`. The installers add an application shortcut and support normal uninstallation. The Windows and macOS packages are not notarized or signed with a trusted publisher certificate.
+
+
+## Screenshots
+
+Demonstration data, captured from the real interface.
+
+![LJ Hub](docs/screenshots/home-en.png)
+
+<p><img src="docs/screenshots/device-en.png" width="49%"> <img src="docs/screenshots/settings-en.png" width="49%"></p>
 
 ## What works today
 
@@ -14,6 +25,8 @@ Download the [0.1.3 alpha release](https://github.com/jeremdevgit/lj-hub/release
 |---|---|---|---|
 | Discover Logitech USB HID devices | Yes | Yes | Yes |
 | Create, edit and save local profiles | Yes | Yes | Yes |
+| Connected-device dashboard with category previews and capability status | Yes | Yes | Yes |
+| Duplicate profiles and copy/restore a validated local JSON backup | Yes | Yes | Yes |
 | Interface in 8 languages | Yes | Yes | Yes |
 | Search 116 Logitech IDs from a pinned libratbag catalog | Yes | Yes | Yes |
 | System USB/PnP inventory beyond HID (for example cameras and wheels) | Yes | Yes | Yes |
@@ -40,10 +53,27 @@ The application stores profiles in the operating system's user configuration dir
 2. Add a safe capability table and tests for DPI, polling rate, RGB and onboard profiles.
 3. Implement button mapping and a bounded macro engine with explicit user control.
 4. Add headset, microphone, webcam and racing device adapters where documented protocols exist.
-5. Add per-game profile switching, import/export and accessible packaging for all three platforms.
+5. Add per-game profile switching and automatic application of validated device profiles.
 
 Hardware write support will be enabled per device only after testing. Claims of full G HUB parity would be premature because many functions depend on undocumented model-specific protocols.
 
 ## Project
 
 Maintainer: [jeremdevgit](https://github.com/jeremdevgit). Licensed under GPL-3.0-or-later. See [SECURITY.md](SECURITY.md) and [CHANGELOG.md](CHANGELOG.md). Interface: français, English, español, Deutsch, italiano, português, 简体中文, 日本語.
+
+## My software
+
+All free and open source — [github.com/jeremdevgit](https://github.com/jeremdevgit):
+
+| Software | Platform | In short |
+|---|---|---|
+| [Boîte à outils](https://github.com/jeremdevgit/boite-a-outils) | Windows, macOS | Computer maintenance and file search |
+| [Carnet de notes](https://github.com/jeremdevgit/carnet-rust) | Windows | Encrypted notebooks and experimental sync |
+| [JMeca](https://github.com/jeremdevgit/jmeca) | Windows, macOS, Linux | Encrypted vehicle maintenance tracker |
+| [Decklight](https://github.com/jeremdevgit/decklight) | Windows, macOS, Linux | Virtual Stream Deck with USB control |
+| [AutoDex](https://github.com/jeremdevgit/autodex) | Windows, macOS, Linux, web | Car collection with photo recognition |
+| [Pomme](https://github.com/jeremdevgit/pomme) | Windows | Apple Music and local music player |
+| [rJb](https://github.com/jeremdevgit/rjb) | Windows | RGB lighting control |
+| [Ludothèque](https://github.com/jeremdevgit/ludotheque) | macOS | Game library and launcher |
+| [Suite Libre](https://github.com/jeremdevgit/suite-libre) | Browser | Six tools without an account |
+| [Batailles de France](https://github.com/jeremdevgit/batailles-de-france) | Browser | Real-time strategy game |

@@ -35,11 +35,40 @@ jobs:
         run: cargo +stable clippy --locked --all-targets -- -D warnings
       - name: Build release
         run: cargo +stable build --locked --release
-      - name: Upload executable
+      - name: Build Windows installer
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $compiler = @("${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe", "$env:ProgramFiles\Inno Setup 6\ISCC.exe") | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $compiler) { throw 'Inno Setup compiler not found' }
+          & $compiler installer\windows.iss
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Smoke test Windows installer
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $setup = (Get-ChildItem dist\LJ-Hub-*-Windows-Setup.exe | Select-Object -First 1).FullName
+          $folder = Join-Path $env:RUNNER_TEMP 'lj-hub-install-smoke'
+          $process = Start-Process -FilePath $setup -ArgumentList @('/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', "/DIR=$folder") -PassThru -Wait
+          if ($process.ExitCode -ne 0) { throw "Installer exited with $($process.ExitCode)" }
+          if (-not (Test-Path (Join-Path $folder 'lj-hub.exe'))) { throw 'Installed executable missing' }
+          $uninstaller = (Get-ChildItem (Join-Path $folder 'unins*.exe') | Select-Object -First 1).FullName
+          $process = Start-Process -FilePath $uninstaller -ArgumentList @('/VERYSILENT', '/NORESTART') -PassThru -Wait
+          if ($process.ExitCode -ne 0) { throw "Uninstaller exited with $($process.ExitCode)" }
+      - name: Build macOS disk image
+        if: runner.os == 'macOS'
+        run: zsh installer/macos/package.sh
+      - name: Build Linux package
+        if: runner.os == 'Linux'
+        run: bash installer/linux/package.sh
+      - name: Upload installer
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: lj-hub-${{ matrix.artifact }}
-          path: ${{ matrix.binary }}
+          name: lj-hub-installer-${{ matrix.artifact }}
+          path: |
+            dist/*.exe
+            dist/*.dmg
+            dist/*.deb
           if-no-files-found: error
   audit:
     runs-on: ubuntu-24.04

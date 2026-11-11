@@ -1,5 +1,15 @@
 # Changelog / Journal des modifications
 
+## 0.2.0-alpha
+
+- Fix the macOS launch crash: HID enumeration now runs off the UI thread / Correction du plantage au lancement sur macOS : la détection HID s'exécute hors du fil d'interface.
+- Render Chinese and Japanese with a system CJK font loaded on demand, and replace icons missing from the default fonts / Affichage du chinois et du japonais avec une police CJK du système chargée à la demande, et icônes manquantes remplacées.
+- Add a demonstration mode for screenshots / Mode démonstration pour les captures.
+- Rebuild the interface around connected-device cards, category previews, device details and explicit capability states / Nouvelle interface avec cartes des appareils connectés, aperçus par catégorie, fiches et état explicite des fonctions.
+- Add profile duplication and validated JSON copy/restore / Duplication des profils et sauvegarde JSON locale validée.
+- Move hardware commands to a worker thread so the interface stays responsive / Commandes matérielles exécutées hors du fil d'interface.
+- Package Windows installer, macOS disk image and Linux Debian package in CI / Création en CI d'un installateur Windows, d'une image disque macOS et d'un paquet Debian Linux.
+
 ## 0.1.3-alpha
 
 - Add experimental Windows HID++ 2.0 DPI and report interval controls, with feature and value checks plus read-back / Ajout du réglage expérimental du DPI et de l'intervalle sous Windows avec vérification des fonctions, des valeurs et du résultat.

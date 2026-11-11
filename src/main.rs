@@ -1,16 +1,18 @@
 #![cfg_attr(target_os = "windows", windows_subsystem = "windows")]
 
 mod catalog;
+mod dashboard;
 mod device;
 mod i18n;
 mod inventory;
 mod model;
+mod products;
 #[cfg(target_os = "windows")]
 mod windows_hidpp;
 
 use eframe::egui;
-use model::{Profile, Saved};
-use std::{fs, path::PathBuf, sync::mpsc, time::Duration};
+use model::Saved;
+use std::{fs, path::PathBuf, sync::mpsc};
 
 fn data_path() -> Option<PathBuf> {
     directories::ProjectDirs::from("com", "jeremdevgit", "LJ Hub")
@@ -43,19 +45,32 @@ struct App {
     devices: Vec<device::Device>,
     inventory: Vec<inventory::InventoryDevice>,
     inventory_rx: Option<mpsc::Receiver<Result<Vec<inventory::InventoryDevice>, String>>>,
+    devices_rx: Option<mpsc::Receiver<Result<Vec<device::Device>, String>>>,
+    action_rx: Option<mpsc::Receiver<Result<String, String>>>,
     inventory_status: String,
     catalog: Vec<catalog::CatalogDevice>,
     catalog_query: String,
     selected_profile: usize,
-    selected_device: usize,
+    selected_product: Option<String>,
+    page: dashboard::Page,
+    backup_text: String,
     status: String,
     settings_load_error: Option<String>,
     path: Option<PathBuf>,
+    capture: Option<Capture>,
+    cjk_font_loaded: bool,
+}
+
+struct Capture {
+    path: PathBuf,
+    frames: u32,
+    requested: bool,
 }
 
 impl App {
     fn new() -> Self {
-        let path = data_path();
+        let demo = std::env::var_os("LJHUB_DEMO").is_some();
+        let path = if demo { None } else { data_path() };
         let (data, settings_load_error) = match path.as_ref() {
             Some(p) if p.exists() => match load(p) {
                 Ok(data) => (data, None),
@@ -66,23 +81,46 @@ impl App {
             },
             _ => (Saved::default(), None),
         };
-        let devices = device::discover().unwrap_or_default();
         let catalog = catalog::entries();
-        let inventory_rx = Some(start_inventory_scan());
+        let inventory_rx = (!demo).then(start_inventory_scan);
         let status = settings_load_error.clone().unwrap_or_default();
+        let mut data = data;
+        if let Ok(lang) = std::env::var("LJHUB_LANG") {
+            if i18n::LANGUAGES.iter().any(|(code, _)| *code == lang) {
+                data.language = lang;
+            }
+        }
+        let page = match std::env::var("LJHUB_PAGE").as_deref() {
+            Ok("device") => dashboard::Page::Device,
+            Ok("profiles") => dashboard::Page::Profiles,
+            Ok("catalog") => dashboard::Page::Catalog,
+            Ok("settings") => dashboard::Page::Settings,
+            _ => dashboard::Page::Home,
+        };
+        let capture = std::env::var_os("LJHUB_SCREENSHOT").map(|p| Capture {
+            path: PathBuf::from(p),
+            frames: 0,
+            requested: false,
+        });
         Self {
             data,
-            devices,
-            inventory: Vec::new(),
+            devices: Vec::new(),
+            inventory: if demo { demo_inventory() } else { Vec::new() },
             inventory_rx,
+            devices_rx: (!demo).then(start_device_scan),
+            action_rx: None,
             inventory_status: String::new(),
             catalog,
             catalog_query: String::new(),
             selected_profile: 0,
-            selected_device: 0,
+            selected_product: None,
+            page,
+            backup_text: String::new(),
             status,
             settings_load_error,
             path,
+            capture,
+            cjk_font_loaded: false,
         }
     }
     fn persist(&mut self) {
@@ -101,9 +139,37 @@ impl App {
     }
 
     fn refresh_inventory(&mut self) {
+        self.devices_rx = Some(start_device_scan());
         self.inventory_rx = Some(start_inventory_scan());
         self.inventory_status.clear();
     }
+}
+
+// macOS hidapi pumps the CFRunLoop while enumerating, which re-enters winit on the main thread.
+fn start_device_scan() -> mpsc::Receiver<Result<Vec<device::Device>, String>> {
+    let (tx, rx) = mpsc::channel();
+    std::thread::spawn(move || {
+        let _ = tx.send(device::discover());
+    });
+    rx
+}
+
+fn demo_inventory() -> Vec<inventory::InventoryDevice> {
+    [
+        ("G502 X PLUS Gaming Mouse", "046D:C095"),
+        ("G915 TKL Wireless Keyboard", "046D:C343"),
+        ("PRO X 2 Headset", "046D:0AF7"),
+        ("Brio 4K Webcam", "046D:085E"),
+        ("G923 Racing Wheel", "046D:C266"),
+        ("Lightspeed USB Receiver", "046D:C547"),
+    ]
+    .into_iter()
+    .map(|(name, id)| inventory::InventoryDevice {
+        name: name.into(),
+        id: id.into(),
+        kind: "USB".into(),
+    })
+    .collect()
 }
 
 fn start_inventory_scan() -> mpsc::Receiver<Result<Vec<inventory::InventoryDevice>, String>> {
@@ -114,249 +180,62 @@ fn start_inventory_scan() -> mpsc::Receiver<Result<Vec<inventory::InventoryDevic
     rx
 }
 
-impl eframe::App for App {
-    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        if let Some(rx) = &self.inventory_rx {
-            match rx.try_recv() {
-                Ok(Ok(items)) => {
-                    self.inventory = items;
-                    self.inventory_rx = None;
-                }
-                Ok(Err(error)) => {
-                    self.inventory_status = error;
-                    self.inventory_rx = None;
-                }
-                Err(mpsc::TryRecvError::Disconnected) => {
-                    self.inventory_status = "Inventory scan stopped".into();
-                    self.inventory_rx = None;
-                }
-                Err(mpsc::TryRecvError::Empty) => {
-                    ctx.request_repaint_after(Duration::from_millis(250))
-                }
+impl App {
+    fn capture_frame(&mut self, ctx: &egui::Context) {
+        let Some(capture) = self.capture.as_mut() else {
+            return;
+        };
+        let shot = ctx.input(|i| {
+            i.raw.events.iter().find_map(|e| match e {
+                egui::Event::Screenshot { image, .. } => Some(image.clone()),
+                _ => None,
+            })
+        });
+        if let Some(image) = shot {
+            let [w, h] = image.size;
+            let rgba: Vec<u8> = image.pixels.iter().flat_map(|c| c.to_array()).collect();
+            if let Err(e) = image::save_buffer(
+                &capture.path,
+                &rgba,
+                w as u32,
+                h as u32,
+                image::ExtendedColorType::Rgba8,
+            ) {
+                eprintln!("screenshot failed: {e}");
             }
+            ctx.send_viewport_cmd(egui::ViewportCommand::Close);
+            return;
         }
-        let lang = self.data.language.clone();
-        egui::TopBottomPanel::top("top").show(ctx, |ui| {
-            ui.horizontal(|ui| {
-                ui.heading("LJ Hub");
-                ui.separator();
-                egui::ComboBox::from_id_salt("language")
-                    .selected_text(
-                        i18n::LANGUAGES
-                            .iter()
-                            .find(|(c, _)| *c == lang)
-                            .map(|(_, n)| *n)
-                            .unwrap_or("Français"),
-                    )
-                    .show_ui(ui, |ui| {
-                        for (code, name) in i18n::LANGUAGES {
-                            ui.selectable_value(&mut self.data.language, code.into(), name);
-                        }
-                    });
-                if self.data.language != lang {
-                    self.persist();
-                }
-            });
-        });
-        egui::SidePanel::left("devices")
-            .min_width(240.0)
-            .show(ctx, |ui| {
-                ui.heading(i18n::t(&lang, "devices"));
-                if ui.button(i18n::t(&lang, "refresh")).clicked() {
-                    match device::discover() {
-                        Ok(devices) => {
-                            self.devices = devices;
-                            self.selected_device = 0;
-                        }
-                        Err(e) => self.status = e,
-                    }
-                    self.refresh_inventory();
-                }
-                ui.separator();
-                if self.devices.is_empty() {
-                    ui.label(i18n::t(&lang, "no_device"));
-                }
-                for (i, d) in self.devices.iter().enumerate() {
-                    let response = ui.selectable_value(
-                        &mut self.selected_device,
-                        i,
-                        format!("{} ({})", d.label, d.id),
-                    );
-                    if let Some(driver) = &d.catalog_driver {
-                        response.on_hover_text(format!("libratbag: {driver}"));
-                    }
-                }
-                ui.separator();
-                ui.heading(i18n::t(&lang, "system_inventory"));
-                ui.small(i18n::t(&lang, "inventory_note"));
-                if self.inventory_rx.is_some() {
-                    ui.label(i18n::t(&lang, "scanning"));
-                }
-                if !self.inventory_status.is_empty() {
-                    ui.small(&self.inventory_status);
-                }
-                egui::ScrollArea::vertical()
-                    .max_height(150.0)
-                    .show(ui, |ui| {
-                        for d in &self.inventory {
-                            ui.label(format!("{} · {} · {}", d.name, d.id, d.kind));
-                        }
-                    });
-                ui.separator();
-                ui.small(if cfg!(target_os = "linux") {
-                    i18n::t(&lang, "linux_note")
-                } else if cfg!(target_os = "windows") {
-                    i18n::t(&lang, "windows_note")
-                } else {
-                    i18n::t(&lang, "desktop_note")
-                });
-                ui.separator();
-                egui::CollapsingHeader::new(i18n::t(&lang, "catalog")).show(ui, |ui| {
-                    ui.small(i18n::t(&lang, "catalog_note"));
-                    ui.text_edit_singleline(&mut self.catalog_query);
-                    let query = self.catalog_query.to_lowercase();
-                    egui::ScrollArea::vertical()
-                        .max_height(240.0)
-                        .show(ui, |ui| {
-                            for entry in self.catalog.iter().filter(|e| {
-                                query.is_empty()
-                                    || e.name.to_lowercase().contains(&query)
-                                    || e.product_id.to_lowercase().contains(&query)
-                            }) {
-                                ui.label(format!(
-                                    "{} · {} · {} · {}",
-                                    entry.name, entry.transport, entry.product_id, entry.kind
-                                ));
-                            }
-                        });
-                });
-            });
-        egui::CentralPanel::default().show(ctx, |ui| {
-            ui.heading(i18n::t(&lang, "profiles"));
-            ui.horizontal(|ui| {
-                if ui.button(i18n::t(&lang, "add")).clicked() && self.data.profiles.len() < 100 {
-                    let p = Profile {
-                        name: format!("Profile {}", self.data.profiles.len() + 1),
-                        ..Default::default()
-                    };
-                    self.data.profiles.push(p);
-                    self.selected_profile = self.data.profiles.len() - 1;
-                    self.persist();
-                }
-                if ui.button(i18n::t(&lang, "delete")).clicked() && self.data.profiles.len() > 1 {
-                    self.data.profiles.remove(self.selected_profile);
-                    self.selected_profile = 0;
-                    self.persist();
-                }
-            });
-            ui.horizontal_wrapped(|ui| {
-                for (i, p) in self.data.profiles.iter().enumerate() {
-                    ui.selectable_value(&mut self.selected_profile, i, &p.name);
-                }
-            });
-            ui.separator();
-            let p = &mut self.data.profiles[self.selected_profile];
-            egui::Grid::new("profile_grid")
-                .num_columns(2)
-                .show(ui, |ui| {
-                    ui.label(i18n::t(&lang, "name"));
-                    ui.text_edit_singleline(&mut p.name);
-                    ui.end_row();
-                    ui.label("DPI");
-                    ui.add(egui::DragValue::new(&mut p.dpi).range(100..=32000));
-                    ui.end_row();
-                    ui.label(i18n::t(&lang, "rate"));
-                    egui::ComboBox::from_id_salt("rate")
-                        .selected_text(format!("{} ms", p.report_rate_ms))
-                        .show_ui(ui, |ui| {
-                            for ms in [1, 2, 4, 8] {
-                                ui.selectable_value(
-                                    &mut p.report_rate_ms,
-                                    ms,
-                                    format!("{} ms", ms),
-                                );
-                            }
-                        });
-                    ui.end_row();
-                    ui.label(i18n::t(&lang, "color"));
-                    ui.text_edit_singleline(&mut p.color);
-                    ui.end_row();
-                });
-            ui.label(i18n::t(&lang, "notes"));
-            ui.text_edit_multiline(&mut p.notes);
-            ui.horizontal(|ui| {
-                if ui.button(i18n::t(&lang, "save")).clicked() {
-                    self.persist();
-                }
-            });
-            let can_apply = self
-                .devices
-                .get(self.selected_device)
-                .is_some_and(device::supports_hardware);
-            ui.horizontal_wrapped(|ui| {
-                if ui
-                    .add_enabled(can_apply, egui::Button::new(i18n::t(&lang, "apply_dpi")))
-                    .clicked()
-                {
-                    self.status = format_result(device::apply_dpi(
-                        &self.devices[self.selected_device],
-                        &self.data.profiles[self.selected_profile],
-                    ));
-                }
-                if ui
-                    .add_enabled(can_apply, egui::Button::new(i18n::t(&lang, "apply_rate")))
-                    .clicked()
-                {
-                    self.status = format_result(device::apply_rate(
-                        &self.devices[self.selected_device],
-                        &self.data.profiles[self.selected_profile],
-                    ));
-                }
-            });
-            if ui
-                .add_enabled(
-                    self.settings_load_error.is_none(),
-                    egui::Checkbox::new(
-                        &mut self.data.rgb_control_enabled,
-                        i18n::t(&lang, "rgb_control"),
-                    ),
-                )
-                .changed()
-            {
-                self.persist();
-            }
-            ui.small(i18n::t(&lang, "rgb_note"));
-            if ui
-                .add_enabled(
-                    can_apply && self.data.rgb_control_enabled,
-                    egui::Button::new(i18n::t(&lang, "apply_rgb")),
-                )
-                .clicked()
-            {
-                self.status = format_result(device::apply_color(
-                    &self.devices[self.selected_device],
-                    &self.data.profiles[self.selected_profile],
-                    self.data.rgb_control_enabled,
-                ));
-            }
-            ui.separator();
-            ui.label(format!("{}: {}", i18n::t(&lang, "status"), self.status));
-        });
+        capture.frames += 1;
+        if capture.frames > 20 && !capture.requested {
+            capture.requested = true;
+            ctx.send_viewport_cmd(egui::ViewportCommand::Screenshot(Default::default()));
+        }
+        ctx.request_repaint();
     }
 }
 
-fn format_result(result: Result<String, String>) -> String {
-    match result {
-        Ok(message) => message,
-        Err(error) => format!("Error: {error}"),
+impl eframe::App for App {
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        dashboard::render(self, ctx);
+        self.capture_frame(ctx);
     }
 }
 
 fn main() -> eframe::Result {
+    let options = eframe::NativeOptions {
+        viewport: egui::ViewportBuilder::default()
+            .with_inner_size([1180.0, 760.0])
+            .with_min_inner_size([760.0, 540.0]),
+        ..Default::default()
+    };
     eframe::run_native(
         "LJ Hub",
-        eframe::NativeOptions::default(),
-        Box::new(|_| Ok(Box::new(App::new()))),
+        options,
+        Box::new(|cc| {
+            dashboard::theme(&cc.egui_ctx);
+            Ok(Box::new(App::new()))
+        }),
     )
 }
 

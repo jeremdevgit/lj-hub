@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=LJ Hub
+Comment=Local Logitech device profiles and inventory
+Exec=lj-hub
+Icon=lj-hub
+Categories=Settings;Utility;
+Terminal=false
